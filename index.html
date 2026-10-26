@@ -40,19 +40,27 @@
       <div class="preview" id="checker">
         <button class="no-img" id="no-img" type="button">
           <b>Drop a portrait here</b>
-          <span>or click to choose one</span>
+          <span>or click to choose one, or paste it</span>
         </button>
         <canvas id="preview-canvas" width="512" height="512" tabindex="0" hidden
-                aria-label="Token preview. Drag or use arrow keys to move the portrait; scroll or + and − to zoom."></canvas>
+                aria-label="Token preview. Drag or use arrow keys to move the portrait; scroll, pinch or + and − to zoom; double-click to recentre."></canvas>
         <div id="safe-ring"></div>
       </div>
       <div class="preview-meta">
-        <p class="hint">Drag to move. Scroll to zoom. Arrow keys nudge.</p>
-        <p class="eyebrow">512 × 512 · PNG · Transparent</p>
+        <p class="hint">Drag to move. Scroll or pinch to zoom. Double-click to recentre.</p>
+        <p class="eyebrow" id="size-meta">512 × 512 · PNG · Transparent</p>
       </div>
     </div>
 
     <div class="export">
+      <div class="size-row">
+        <span class="eyebrow" id="size-label">Size</span>
+        <div class="seg seg--small" id="size-seg" role="group" aria-labelledby="size-label">
+          <button type="button" data-size="256">256</button>
+          <button type="button" data-size="512" class="active">512</button>
+          <button type="button" data-size="1024">1024</button>
+        </div>
+      </div>
       <button id="export-btn" class="btn btn-primary" type="button" disabled>Add a portrait to download</button>
       <p class="hint">Works in Roll20, Foundry VTT and Owlbear Rodeo.</p>
     </div>
@@ -64,7 +72,7 @@
       <div class="panel-head"><h2>Portrait</h2></div>
       <button class="drop" id="drop-zone" type="button">
         <b id="dz-name">Choose an image</b>
-        <span id="dz-text">PNG, JPG or WEBP. You can also drop it on the preview.</span>
+        <span id="dz-text">PNG, JPG or WEBP. You can also drop it on the preview or paste it.</span>
       </button>
       <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" hidden>
     </section>
@@ -117,6 +125,11 @@
           <input type="range" id="s-sat" min="0" max="200" value="100">
           <output id="v-sat" for="s-sat">100</output>
         </div>
+        <div class="slider">
+          <label for="s-rot">Rotation</label>
+          <input type="range" id="s-rot" min="-180" max="180" value="0">
+          <output id="v-rot" for="s-rot">0°</output>
+        </div>
         <div class="btn-row">
           <button id="btn-flip" class="btn-small" type="button">Flip</button>
           <button id="btn-rot" class="btn-small" type="button">Rotate 90°</button>
@@ -132,11 +145,11 @@
       <div class="ctl">
         <div class="slider">
           <label for="s-inner">Clip radius</label>
-          <input type="range" id="s-inner" min="60" max="256" value="200">
-          <output id="v-inner" for="s-inner">200</output>
+          <input type="range" id="s-inner" min="60" max="256" value="220">
+          <output id="v-inner" for="s-inner">220</output>
         </div>
         <label class="check"><input type="checkbox" id="show-ring"> Show the safe-area ring</label>
-        <p class="hint">Anything outside the ring sits under the border.</p>
+        <p class="hint">The portrait is cut at the ring. Keep it just past the border's inner edge.</p>
       </div>
     </details>
 

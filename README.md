@@ -8,15 +8,16 @@
 
 ## ✨ Features
 
-- **Upload any portrait** — PNG, JPG, or WEBP
+- **Upload, drop or paste a portrait**: PNG, JPG or WEBP
 - **10 built-in borders** — Iron Ring, Celtic Gold, Vine Serpent, Blood Ruby, Runic Amethyst, Sapphire Knot, Dragon Coil, Dwarven Rune, Iron Barb, Copper Vine
 - **Drag to reposition** — click and drag the portrait inside the token frame
-- **Scroll to zoom** — mousewheel over the preview to scale
+- **Scroll or pinch to zoom**: double-click the preview to recentre
 - **Independent X/Y scaling** — stretch horizontally or vertically with separate sliders
-- **Image adjustments** — brightness, contrast, saturation sliders; flip horizontal; rotate 90°
-- **Custom borders** — upload your own 512×512 PNG border at any time
+- **Image adjustments** — brightness, contrast, saturation sliders; flip horizontal; free rotation
+- **Custom borders**: upload your own 512×512 PNG; the cut radius is detected automatically
 - **Safe area overlay** — toggle a ring to see what the border clips
-- **Export** — downloads a 512×512 transparent PNG ready for any VTT
+- **Export**: transparent PNG at 256, 512 or 1024 px
+- **Remembers your settings** between visits
 
 ## 🚀 Usage
 
