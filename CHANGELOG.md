@@ -8,7 +8,7 @@
 - Portraits can be dropped or chosen straight on the preview
 - Exports are named after the portrait (`goblin-token.png`)
 - Removed Tailwind and daisyUI; the CSS is plain and there is no build step
-- Border images are WebP: 2.4 MB down to 0.8 MB, no visible change
+- New border art for all 10 borders, redrawn from the originals with a solid, fully opaque band (the old art was 15–35% semi-transparent, so the page showed through the metal); WebP, 0.9 MB in total
 
 ### Added
 - Paste a portrait with Ctrl+V / Cmd+V
