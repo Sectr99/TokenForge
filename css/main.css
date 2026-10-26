@@ -135,10 +135,6 @@ body::before {
 }
 .btn-primary:hover { background: var(--btn-hover); box-shadow: 0 0 0 1.5px var(--rule), inset 0 0 0 3px var(--btn-hover), inset 0 0 0 4.5px var(--paper); }
 .btn-primary:active { transform: translateY(2px); }
-/* Waiting / locked: a quiet dashed outline, not a big grey slab */
-.btn-primary.is-locked { background: none; color: var(--ink-3); box-shadow: none; pointer-events: none; outline: 1.5px dashed var(--rule); outline-offset: -1.5px; min-height: 48px; }
-.btn kbd { font: 400 var(--fs-12)/1 var(--display); letter-spacing: 0.08em; padding: 4px 6px; border: 1px solid currentColor; opacity: 0.6; }
-@media (max-width: 920px) { .btn kbd { display: none; } }
 /* Text action */
 .btn-link {
   background: none; border: 0; padding: 4px 0; color: var(--ink-2);
@@ -147,7 +143,6 @@ body::before {
 }
 .btn-link:hover { color: var(--ink); }
 .btn-link:disabled { color: var(--ink-3); text-decoration: none; cursor: default; opacity: 0.6; }
-.btn-danger:hover { color: var(--red); }  /* destructive: red only on hover, and kept away from frequent actions */
 /* Small outlined control */
 .btn-small {
   display: inline-flex; align-items: center; min-height: 32px; padding: 0 10px;
@@ -165,22 +160,7 @@ body::before {
 .col-side { counter-reset: chapter; }
 .col-side .panel-head h2::before { counter-increment: chapter; content: counter(chapter, upper-roman) '.'; color: var(--ink-3); margin-right: 0.45em; }
 .panel-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 12px; }
-.panel-foot .btn-danger { margin-left: auto; }
 .caret { width: 10px; height: 10px; border-right: 2px solid var(--rule); border-bottom: 2px solid var(--rule); transform: rotate(45deg) translateY(-3px); transition: transform 0.2s; }
-.caret.open { transform: rotate(-135deg) translateY(-1px); }
-
-/* ── Segmented control: ink shows through 1.5px gaps as dividers ── */
-.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 1.5px; background: var(--ink); border: 1.5px solid var(--rule); width: fit-content; max-width: 100%; }
-.seg button { background: var(--paper); border: 0; padding: 10px 14px; font: 400 var(--fs-14)/1.1 var(--display); letter-spacing: 0.06em; text-transform: uppercase; text-align: left; }
-.seg button small { display: block; font: 400 var(--fs-12)/1.2 var(--text); text-transform: none; letter-spacing: 0; color: var(--ink-3); }
-.seg button:hover { background: var(--paper-2); }
-.seg button.active { background: var(--ink); color: var(--paper); }
-.seg button.active small { color: inherit; opacity: 0.75; }
-.seg--small button { padding: 7px 12px; }
-@media (max-width: 520px) {
-  .seg:not(.seg--small) { width: 100%; }
-  .seg:not(.seg--small):has(> :nth-child(4)) { grid-auto-flow: row; grid-template-columns: 1fr 1fr; }
-}
 
 /* ── Colophon footer: double rule inset to content, centred ── */
 .site-footer { position: relative; max-width: var(--measure); margin: 24px auto 0; padding: 28px var(--gutter) 48px; color: var(--ink-3); font-size: var(--fs-12); line-height: 1.55; text-align: center; }

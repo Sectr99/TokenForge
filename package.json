@@ -3,9 +3,6 @@
   "version": "3.0.0",
   "private": true,
   "scripts": {
-    "start": "serve . -l 3000"
-  },
-  "devDependencies": {
-    "serve": "^14.2.6"
+    "start": "npx --yes serve@14 . -l 3000"
   }
 }

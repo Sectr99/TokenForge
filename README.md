@@ -27,8 +27,7 @@
 ```bash
 git clone https://github.com/Sectr99/Tokenizer.git
 cd Tokenizer
-npm install
-npm start          # http://localhost:3000
+npm start          # http://localhost:3000, no install needed
 ```
 
 Or just open `index.html` directly.
