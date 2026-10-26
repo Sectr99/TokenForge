@@ -2,7 +2,7 @@
 
 > A self-contained, browser-based VTT token maker for Roll20, Foundry VTT, OwlBear Rodeo, and any other virtual tabletop platform.
 
-![Token Forge](https://img.shields.io/badge/version-2.1.0-gold) ![License](https://img.shields.io/badge/license-MIT-blue) ![Deployed on Cloudflare](https://img.shields.io/badge/deployed-Cloudflare%20Pages-orange)
+![Token Forge](https://img.shields.io/badge/version-3.0.0-gold) ![License](https://img.shields.io/badge/license-MIT-blue) ![Deployed on Cloudflare](https://img.shields.io/badge/deployed-Cloudflare%20Pages-orange)
 
 ---
 
@@ -28,11 +28,10 @@
 git clone https://github.com/Sectr99/Tokenizer.git
 cd Tokenizer
 npm install
-npm run dev        # watch mode — rebuilds CSS on change
-npx serve . -l 3000
+npm start          # http://localhost:3000
 ```
 
-Or just open `index.html` directly after running `npm run build:css` once.
+Or just open `index.html` directly.
 
 ## 🖼 Custom Borders
 
@@ -48,13 +47,12 @@ To use your own border art:
 Tokenizer/
 ├── index.html        # App shell
 ├── css/
-│   ├── input.css     # Tailwind v4 source
-│   └── main.css      # Built output (committed)
+│   └── main.css      # All styles (DungeonTools tokens + components)
 ├── js/
 │   ├── app.js        # Canvas logic + event handlers
 │   └── borders.js    # Border definitions
 ├── assets/           # Border images
-├── package.json      # Build scripts (Tailwind CLI)
+├── package.json      # Local server script
 ├── wrangler.jsonc    # Cloudflare Pages config
 ├── README.md         # This file
 ├── LICENSE           # MIT License

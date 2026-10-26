@@ -7,3 +7,7 @@
 
 # npm
 node_modules/
+
+# Claude Code (local only)
+.claude/
+CLAUDE.md

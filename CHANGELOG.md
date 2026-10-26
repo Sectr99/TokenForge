@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.0.0] - 2026-10-26
+
+### Changed
+- Redesigned in the DungeonTools style: bone paper and ink, Oswald and Crimson Pro, ruled numbered panels, light and dark mode (Auto/Light/Dark)
+- Preview and Download stay in view on desktop; on phones the Download button sticks to the bottom
+- Portraits can be dropped or chosen straight on the preview
+- Exports are named after the portrait (`goblin-token.png`)
+- Removed Tailwind and daisyUI; the CSS is plain and there is no build step
+
+### Added
+- Keyboard control: border tiles and the upload area are buttons; arrow keys nudge the portrait, + and − zoom
+- An error message when a dropped file is not a PNG, JPG or WEBP
+
+### Fixed
+- File names with `<` or `&` broke the upload label
+
+### Removed
+- Torch emoji, flicker animation and the random background canvas
+
 ## [2.1.0] - 2026-06-15
 
 ### Added

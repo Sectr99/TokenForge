@@ -16,6 +16,8 @@ let contrast    = 100;
 let saturation  = 100;
 let flipH       = false;
 let rotation    = 0;
+let portraitName = '';
+let borderName   = '';
 
 // ── DOM refs ───────────────────────────────────────────────────────────────
 const canvas     = document.getElementById('preview-canvas');
@@ -31,34 +33,12 @@ const sxSlider    = document.getElementById('s-sx');
 const sySlider    = document.getElementById('s-sy');
 const linkAxes    = document.getElementById('link-axes');
 
-// ── Background canvas ──────────────────────────────────────────────────────
-(function initBgCanvas() {
-  const bg  = document.getElementById('bg-canvas');
-  const bctx = bg.getContext('2d');
-  function resize() { bg.width = window.innerWidth; bg.height = window.innerHeight; drawBg(); }
-  function drawBg() {
-    bctx.clearRect(0, 0, bg.width, bg.height);
-    // subtle stone grain
-    for (let i = 0; i < 400; i++) {
-      const x = Math.random() * bg.width;
-      const y = Math.random() * bg.height;
-      const r = Math.random() * 1.5;
-      const a = Math.random() * 0.025;
-      bctx.beginPath();
-      bctx.arc(x, y, r, 0, Math.PI * 2);
-      bctx.fillStyle = `rgba(200,150,80,${a})`;
-      bctx.fill();
-    }
-  }
-  window.addEventListener('resize', resize);
-  resize();
-})();
-
 // ── Border grid ─────────────────────────────────────────────────────────────
 function buildBorderGrid() {
   BORDERS.forEach((b, i) => {
-    const el  = document.createElement('div');
-    el.className = 'border-opt loading' + (i === 0 ? ' sel' : '');
+    const el  = document.createElement('button');
+    el.type = 'button';
+    el.className = 'border-opt loading';
     el.dataset.id = b.id;
 
     const img = document.createElement('img');
@@ -83,14 +63,14 @@ function buildBorderGrid() {
     if (i === 0) selectBorder(el, b);
   });
 
-  // + Add custom border button
-  const addBtn = document.getElementById('add-border-btn');
-  addBtn.addEventListener('click', () => document.getElementById('custom-border-input').click());
+  document.getElementById('add-border-btn').addEventListener('click', () => document.getElementById('custom-border-input').click());
 }
 
 function selectBorder(el, b) {
-  document.querySelectorAll('.border-opt').forEach(x => x.classList.remove('sel'));
+  document.querySelectorAll('.border-opt').forEach(x => { x.classList.remove('sel'); x.setAttribute('aria-pressed', 'false'); });
   el.classList.add('sel');
+  el.setAttribute('aria-pressed', 'true');
+  borderName = b.name;
 
   // Load full-res border on demand
   const bi = new Image();
@@ -109,12 +89,13 @@ function selectBorder(el, b) {
 document.getElementById('custom-border-input').addEventListener('change', function () {
   const file = this.files[0];
   if (!file) return;
-  const name   = file.name.replace(/\.[^.]+$/, '').slice(0, 14);
+  const name   = file.name.replace(/\.[^.]+$/, '').slice(0, 20);
   const reader = new FileReader();
   reader.onload = (e) => {
     const src = e.target.result;
 
-    const el  = document.createElement('div');
+    const el  = document.createElement('button');
+    el.type = 'button';
     el.className = 'border-opt';
     el.dataset.id = 'custom-' + Date.now();
 
@@ -131,7 +112,7 @@ document.getElementById('custom-border-input').addEventListener('change', functi
 
     const customBorderDef = { id: el.dataset.id, name, src, innerR: 180 };
     el.addEventListener('click', () => selectBorder(el, customBorderDef));
-    borderGrid.insertBefore(el, document.getElementById('add-border-btn'));
+    borderGrid.appendChild(el);
 
     // Auto-select the newly added border
     selectBorder(el, customBorderDef);
@@ -144,32 +125,51 @@ document.getElementById('custom-border-input').addEventListener('change', functi
 const dz = document.getElementById('drop-zone');
 const fi = document.getElementById('file-input');
 
+const checker = document.getElementById('checker');
+const dzName  = document.getElementById('dz-name');
+const dzText  = document.getElementById('dz-text');
+
 dz.addEventListener('click', () => fi.click());
-dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('over'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('over'));
-dz.addEventListener('drop', e => {
-  e.preventDefault();
-  dz.classList.remove('over');
-  loadPortrait(e.dataTransfer.files[0]);
+noImg.addEventListener('click', () => fi.click());
+[dz, checker].forEach(t => {
+  t.addEventListener('dragover',  e => { e.preventDefault(); t.classList.add('over'); });
+  t.addEventListener('dragleave', () => t.classList.remove('over'));
+  t.addEventListener('drop', e => {
+    e.preventDefault();
+    t.classList.remove('over');
+    loadPortrait(e.dataTransfer.files[0]);
+  });
 });
-fi.addEventListener('change', () => { if (fi.files[0]) loadPortrait(fi.files[0]); });
+fi.addEventListener('change', () => { if (fi.files[0]) loadPortrait(fi.files[0]); fi.value = ''; });
+
+function portraitError(msg) {
+  dzText.textContent = msg;
+  dzText.classList.add('err');
+}
 
 function loadPortrait(file) {
   if (!file) return;
+  if (!/^image\/(png|jpeg|webp)$/.test(file.type)) {
+    portraitError(`${file.name} isn't a PNG, JPG or WEBP image.`);
+    return;
+  }
   const reader = new FileReader();
   reader.onload = (e) => {
     const img = new Image();
     img.onload = () => {
       portrait = img;
+      portraitName = file.name.replace(/\.[^.]+$/, '');
       ox = 0; oy = 0; sx = 1; sy = 1;
       syncSliders();
+      dzName.textContent = file.name;
+      dzText.textContent = 'Click to replace it.';
+      dzText.classList.remove('err');
       render();
     };
+    img.onerror = () => portraitError(`${file.name} could not be read. Try saving it again as PNG.`);
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
-  document.getElementById('dz-text').innerHTML =
-    `<strong>${file.name}</strong><br><span style="font-size:11px;color:var(--text-dim)">Click to replace</span>`;
 }
 
 // ── Sliders ─────────────────────────────────────────────────────────────────
@@ -275,19 +275,35 @@ canvas.addEventListener('wheel', e => {
   render();
 }, { passive: false });
 
+// Arrow keys nudge (Shift for 10px), + and − zoom
+canvas.addEventListener('keydown', e => {
+  if (!portrait) return;
+  const step = e.shiftKey ? 10 : 2;
+  const moves = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
+  if (moves[e.key]) { ox += moves[e.key][0]; oy += moves[e.key][1]; }
+  else if (e.key === '+' || e.key === '=' || e.key === '-') {
+    const d = e.key === '-' ? -0.05 : 0.05;
+    sx = Math.max(0.2, Math.min(2.5, sx + d));
+    sy = linkAxes.checked ? sx : Math.max(0.2, Math.min(2.5, sy + d));
+    syncSliders();
+  } else return;
+  e.preventDefault();
+  render();
+});
+
 // ── Render ───────────────────────────────────────────────────────────────────
 function render() {
   ctx.clearRect(0, 0, SIZE, SIZE);
 
   if (!portrait && !borderImg) {
-    noImg.style.display  = '';
-    canvas.style.display = 'none';
-    exportBtn.disabled   = true;
+    noImg.hidden  = false;
+    canvas.hidden = true;
+    updateExport();
     return;
   }
 
-  noImg.style.display  = 'none';
-  canvas.style.display = 'block';
+  noImg.hidden  = !!portrait;
+  canvas.hidden = !portrait;
 
   if (portrait) {
     const r   = (borderInnerR || (SIZE / 2 - 24)) + 20;
@@ -309,7 +325,15 @@ function render() {
 
   if (borderImg) ctx.drawImage(borderImg, 0, 0, SIZE, SIZE);
 
-  exportBtn.disabled = !(portrait && borderImg);
+  updateExport();
+}
+
+function updateExport() {
+  const ready = !!(portrait && borderImg);
+  exportBtn.disabled = !ready;
+  exportBtn.textContent = ready ? 'Download token' : portrait ? 'Pick a border to download' : 'Add a portrait to download';
+  document.getElementById('dateline').textContent =
+    [portraitName || 'No portrait', borderName || 'No border', `${Math.round(sx * 100)}%`].join(' · ');
 }
 
 // ── Image adjustment listeners ───────────────────────────────────────────────
@@ -356,10 +380,25 @@ document.getElementById('reset-adj').addEventListener('click', () => {
 // ── Export ───────────────────────────────────────────────────────────────────
 exportBtn.addEventListener('click', () => {
   const a    = document.createElement('a');
-  a.download = 'token.png';
+  a.download = (portraitName || 'token') + '-token.png';
   a.href     = canvas.toDataURL('image/png');
   a.click();
 });
+
+// ── Theme: Auto → Light → Dark ───────────────────────────────────────────────
+const themeBtn = document.getElementById('theme-btn');
+const themes   = ['', 'light', 'dark'];
+function showTheme() {
+  const t = document.documentElement.dataset.theme || '';
+  themeBtn.textContent = { '': 'Auto', light: 'Light', dark: 'Dark' }[t];
+}
+themeBtn.addEventListener('click', () => {
+  const t = themes[(themes.indexOf(document.documentElement.dataset.theme || '') + 1) % 3];
+  if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+  try { t ? localStorage.setItem('tf-theme', t) : localStorage.removeItem('tf-theme'); } catch (e) {}
+  showTheme();
+});
+showTheme();
 
 // ── Init ─────────────────────────────────────────────────────────────────────
 buildBorderGrid();
