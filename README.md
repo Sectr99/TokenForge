@@ -1,71 +1,67 @@
-# 🔥 Token Forge
+# Token Forge
 
-> A self-contained, browser-based VTT token maker for Roll20, Foundry VTT, OwlBear Rodeo, and any other virtual tabletop platform.
+Make round tokens for virtual tabletops in your browser. Pick a border, frame a portrait, and download a transparent PNG for Roll20, Foundry VTT, Owlbear Rodeo or any VTT that takes images.
 
-![Token Forge](https://img.shields.io/badge/version-3.0.0-gold) ![License](https://img.shields.io/badge/license-MIT-blue) ![Deployed on Cloudflare](https://img.shields.io/badge/deployed-Cloudflare%20Pages-orange)
+**[Open Token Forge](https://tokenforge.dungeongadgets.com/)** · No account, no upload: images never leave your browser.
 
----
+[![Version](https://img.shields.io/github/v/release/Sectr99/TokenForge?label=version&color=1a1714)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/license-MIT-1a1714)](LICENSE)
+[![Live site](https://img.shields.io/badge/live-tokenforge.dungeongadgets.com-a8261b)](https://tokenforge.dungeongadgets.com/)
 
-## ✨ Features
+![Token Forge with a ranger portrait in the Celtic Gold border](docs/screenshot.jpg)
 
-- **Upload, drop or paste a portrait**: PNG, JPG or WEBP
-- **10 built-in borders** — Iron Ring, Celtic Gold, Vine Serpent, Blood Ruby, Runic Amethyst, Sapphire Knot, Dragon Coil, Dwarven Rune, Iron Barb, Copper Vine
-- **Drag to reposition** — click and drag the portrait inside the token frame
-- **Scroll or pinch to zoom**: double-click the preview to recentre
-- **Independent X/Y scaling** — stretch horizontally or vertically with separate sliders
-- **Image adjustments** — brightness, contrast, saturation sliders; flip horizontal; free rotation
-- **Custom borders**: upload your own 512×512 PNG; the cut radius is detected automatically
-- **Safe area overlay** — toggle a ring to see what the border clips
-- **Export**: transparent PNG at 256, 512 or 1024 px
-- **Remembers your settings** between visits
+## Features
 
-## 🚀 Usage
+- **Portraits:** upload, drop or paste (Ctrl+V) a PNG, JPG or WEBP.
+- **10 borders:** Iron Ring, Celtic Gold, Vine Serpent, Blood Ruby, Runic Amethyst, Sapphire Knot, Dragon Coil, Dwarven Rune, Iron Barb and Copper Vine.
+- **Custom borders:** load your own 512×512 PNG. The opening is detected automatically.
+- **Framing:** drag to move, scroll or pinch to zoom, double-click to recentre. Width and height scale separately when you need to stretch.
+- **Adjustments:** brightness, contrast, saturation, flip and free rotation.
+- **Safe-area ring:** shows exactly where the portrait is cut.
+- **Export:** transparent PNG at 256, 512 or 1024 px. Larger sizes are redrawn from the source image, not upscaled.
+- **Keyboard:** arrow keys nudge (Shift for bigger steps), + and − zoom.
+- **Light and dark themes**, and your settings are remembered between visits.
 
-**Online:** visit the Cloudflare Pages deployment (no install required).
+## Running locally
 
-**Local dev:**
+No build step and no dependencies. Clone the repo and serve the folder:
 
 ```bash
-git clone https://github.com/Sectr99/Tokenizer.git
-cd Tokenizer
-npm start          # http://localhost:3000, no install needed
+git clone https://github.com/Sectr99/TokenForge.git
+cd TokenForge
+npm start
 ```
 
-Or just open `index.html` directly.
+Then open http://localhost:3000. `npm start` runs [`serve`](https://www.npmjs.com/package/serve) through `npx`; any static file server works.
 
-## 🖼 Custom Borders
+## How it works
 
-To use your own border art:
-
-1. Create a **512×512 PNG** with a transparent background
-2. Design your border ring in the center, leaving the middle clear for the portrait
-3. Click **+ Add custom border** in the app to load it
-
-## 📁 Project Structure
+Everything runs client-side on a single `<canvas>`. The portrait is clipped to a circle at the border's inner radius, transformed and filtered, and the border image is drawn on top. Exports redraw the same scene on an offscreen canvas at the chosen size.
 
 ```
-Tokenizer/
-├── index.html        # App shell
-├── css/
-│   └── main.css      # All styles (DungeonTools tokens + components)
-├── js/
-│   ├── app.js        # Canvas logic + event handlers
-│   └── borders.js    # Border definitions
-├── assets/           # Border images
-├── package.json      # Local server script
-├── wrangler.jsonc    # Cloudflare Pages config
-├── README.md         # This file
-├── LICENSE           # MIT License
-└── CHANGELOG.md      # Version history
+index.html          page shell
+css/main.css        styles (DungeonTools design tokens and components)
+js/borders.js       built-in border list: image path and cut radius
+js/app.js           canvas rendering, input handling, export, saved settings
+assets/borders/     border art (512×512 WebP with alpha)
 ```
 
-## 🗺 Roadmap
+### Adding a built-in border
 
-- [ ] Color tint overlay per border
-- [ ] Token size presets (Small / Medium / Large / Huge)
-- [ ] Text label beneath token
-- [ ] Batch export
+1. Add a 512×512 image with a transparent background and a fully opaque ring to `assets/borders/`.
+2. Add an entry to `BORDERS` in `js/borders.js`. `innerR` is the radius in pixels, from the centre, where the portrait is cut. Set it a few pixels past the ring's inner edge so the portrait tucks under it.
 
-## 📜 License
+## Deployment
 
-MIT — free to use, modify, and distribute. See [LICENSE](LICENSE) for details.
+Hosted on Cloudflare. Pushes to `main` deploy the repository root as static assets (see `wrangler.jsonc`); cache headers are in `_headers`. JS and CSS are cached for a year, so bump the `?v=` query in `index.html` when they change.
+
+## Roadmap
+
+- Colour tint per border
+- Creature size presets (Small, Medium, Large, Huge)
+- Name label under the token
+- Batch export
+
+## License
+
+[MIT](LICENSE). Part of [Dungeon Gadgets](https://dungeongadgets.com/), tools for running tabletop games.
