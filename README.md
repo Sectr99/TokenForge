@@ -2,21 +2,22 @@
 
 > A self-contained, browser-based VTT token maker for Roll20, Foundry VTT, OwlBear Rodeo, and any other virtual tabletop platform.
 
-![Token Forge](https://img.shields.io/badge/version-2.1.0-gold) ![License](https://img.shields.io/badge/license-MIT-blue) ![Deployed on Cloudflare](https://img.shields.io/badge/deployed-Cloudflare%20Pages-orange)
+![Token Forge](https://img.shields.io/badge/version-3.0.0-gold) ![License](https://img.shields.io/badge/license-MIT-blue) ![Deployed on Cloudflare](https://img.shields.io/badge/deployed-Cloudflare%20Pages-orange)
 
 ---
 
 ## ✨ Features
 
-- **Upload any portrait** — PNG, JPG, or WEBP
+- **Upload, drop or paste a portrait**: PNG, JPG or WEBP
 - **10 built-in borders** — Iron Ring, Celtic Gold, Vine Serpent, Blood Ruby, Runic Amethyst, Sapphire Knot, Dragon Coil, Dwarven Rune, Iron Barb, Copper Vine
 - **Drag to reposition** — click and drag the portrait inside the token frame
-- **Scroll to zoom** — mousewheel over the preview to scale
+- **Scroll or pinch to zoom**: double-click the preview to recentre
 - **Independent X/Y scaling** — stretch horizontally or vertically with separate sliders
-- **Image adjustments** — brightness, contrast, saturation sliders; flip horizontal; rotate 90°
-- **Custom borders** — upload your own 512×512 PNG border at any time
+- **Image adjustments** — brightness, contrast, saturation sliders; flip horizontal; free rotation
+- **Custom borders**: upload your own 512×512 PNG; the cut radius is detected automatically
 - **Safe area overlay** — toggle a ring to see what the border clips
-- **Export** — downloads a 512×512 transparent PNG ready for any VTT
+- **Export**: transparent PNG at 256, 512 or 1024 px
+- **Remembers your settings** between visits
 
 ## 🚀 Usage
 
@@ -27,12 +28,10 @@
 ```bash
 git clone https://github.com/Sectr99/Tokenizer.git
 cd Tokenizer
-npm install
-npm run dev        # watch mode — rebuilds CSS on change
-npx serve . -l 3000
+npm start          # http://localhost:3000, no install needed
 ```
 
-Or just open `index.html` directly after running `npm run build:css` once.
+Or just open `index.html` directly.
 
 ## 🖼 Custom Borders
 
@@ -48,13 +47,12 @@ To use your own border art:
 Tokenizer/
 ├── index.html        # App shell
 ├── css/
-│   ├── input.css     # Tailwind v4 source
-│   └── main.css      # Built output (committed)
+│   └── main.css      # All styles (DungeonTools tokens + components)
 ├── js/
 │   ├── app.js        # Canvas logic + event handlers
 │   └── borders.js    # Border definitions
 ├── assets/           # Border images
-├── package.json      # Build scripts (Tailwind CLI)
+├── package.json      # Local server script
 ├── wrangler.jsonc    # Cloudflare Pages config
 ├── README.md         # This file
 ├── LICENSE           # MIT License

@@ -1,211 +1,171 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="tokenforge">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Token Forge — VTT Token Maker</title>
+  <title>Token Forge</title>
+  <meta name="description" content="Make round VTT tokens for Roll20, Foundry and Owlbear Rodeo. Runs in your browser; nothing is uploaded.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,4 90,27 90,73 50,96 10,73 10,27' fill='%23f1ece1' stroke='%231a1714' stroke-width='8' stroke-linejoin='round'/%3E%3Cpolygon points='50,24 75,66 25,66' fill='none' stroke='%23a8261b' stroke-width='7' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css?v=3.0.0">
+  <script>try { const t = localStorage.getItem('tf-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
-<canvas id="bg-canvas"></canvas>
-
-<header class="tf-header">
-  <div class="tf-header-inner">
-    <div class="header-side">
-      <span class="header-torch">🔥</span>
+<header class="masthead">
+  <div class="masthead-plate">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 100 100" aria-hidden="true">
+        <polygon class="bm-edge" points="50,4 90,27 90,73 50,96 10,73 10,27"/>
+        <path class="bm-facet" d="M50,26 L10,27 M50,26 L50,4 M50,26 L90,27 M26,67 L10,27 M26,67 L10,73 M26,67 L50,96 M74,67 L90,27 M74,67 L90,73 M74,67 L50,96"/>
+        <polygon class="bm-face" points="50,26 74,67 26,67"/>
+      </svg>
+      <div>
+        <h1 class="mark">Token Forge</h1>
+        <p class="tagline">Round tokens for any virtual tabletop</p>
+      </div>
     </div>
-    <div class="text-center">
-      <div class="logo-title">Token Forge</div>
-      <div class="logo-sub">VTT Token Maker</div>
-    </div>
-    <div class="header-side header-side-right">
-      <span class="header-torch" style="animation-delay:1.3s">🔥</span>
-      <span class="text-[10px] tracking-widest" style="color:var(--text-faint)">v2.1.0</span>
-    </div>
+    <nav class="bar-tools">
+      <button class="tool" id="theme-btn" type="button" aria-label="Colour theme">Auto</button>
+    </nav>
   </div>
-  <div class="header-rule"></div>
+  <p class="dateline" id="dateline"></p>
 </header>
 
-<main class="tf-main flex-1">
+<main class="screen">
 
-  <!-- LEFT: Portrait + Border -->
-  <aside class="tf-sidebar tf-left">
-
-    <div class="tf-section">
-      <div class="panel-label">Portrait</div>
-      <div id="drop-zone">
-        <div class="text-3xl mb-2">🖼</div>
-        <p id="dz-text" class="text-[12px] leading-relaxed" style="color:var(--text-dim)">
-          <strong class="font-medium" style="color:var(--text-primary)">Drop image here</strong><br>
-          or click to browse<br>
-          <span class="text-[10px]">PNG · JPG · WEBP</span>
-        </p>
-      </div>
-      <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" class="hidden">
-    </div>
-
-    <div class="tf-sidebar-divider"></div>
-
-    <div class="tf-section">
-      <div class="panel-label">Border</div>
-      <div class="border-grid" id="border-grid">
-        <!-- .border-opt elements appended here by JS -->
-        <button id="add-border-btn">+ Add custom</button>
-        <input type="file" id="custom-border-input" accept="image/png,image/webp" class="hidden">
-      </div>
-    </div>
-
-  </aside>
-
-  <!-- CENTER: Canvas hero -->
-  <div class="tf-center">
-    <div class="preview-frame">
-      <div class="bolt bolt-tl"></div>
-      <div class="bolt bolt-tr"></div>
-      <div class="bolt bolt-bl"></div>
-      <div class="bolt bolt-br"></div>
-      <div class="checker" id="checker">
-        <p class="no-img" id="no-img">Upload a portrait<br>and select a border.</p>
-        <canvas id="preview-canvas" width="512" height="512" style="display:none"></canvas>
+  <section class="col-main">
+    <div>
+      <div class="preview" id="checker">
+        <button class="no-img" id="no-img" type="button">
+          <b>Drop a portrait here</b>
+          <span>or click to choose one, or paste it</span>
+        </button>
+        <canvas id="preview-canvas" width="512" height="512" tabindex="0" hidden
+                aria-label="Token preview. Drag or use arrow keys to move the portrait; scroll, pinch or + and − to zoom; double-click to recentre."></canvas>
         <div id="safe-ring"></div>
       </div>
+      <div class="preview-meta">
+        <p class="hint">Drag to move. Scroll or pinch to zoom. Double-click to recentre.</p>
+        <p class="eyebrow">PNG · Transparent</p>
+      </div>
     </div>
 
-    <p class="text-[10px] tracking-widest" style="color:var(--text-faint)">
-      Drag to reposition · Scroll to zoom
-    </p>
-
-    <div class="flex gap-1.5 flex-wrap justify-center">
-      <span class="badge badge-outline badge-sm text-[9px] tracking-widest uppercase"
-            style="color:var(--text-faint);border-color:var(--stone-edge)">512 × 512</span>
-      <span class="badge badge-outline badge-sm text-[9px] tracking-widest uppercase"
-            style="color:var(--text-faint);border-color:var(--stone-edge)">PNG</span>
-      <span class="badge badge-outline badge-sm text-[9px] tracking-widest uppercase"
-            style="color:var(--text-faint);border-color:var(--stone-edge)">Alpha</span>
+    <div class="export">
+      <div class="size-row">
+        <span class="eyebrow" id="size-label">Size</span>
+        <div class="seg seg--small" id="size-seg" role="group" aria-labelledby="size-label">
+          <button type="button" data-size="256">256</button>
+          <button type="button" data-size="512" class="active">512</button>
+          <button type="button" data-size="1024">1024</button>
+        </div>
+      </div>
+      <button id="export-btn" class="btn btn-primary" type="button" disabled>Add a portrait to download</button>
+      <p class="hint">Works in Roll20, Foundry VTT and Owlbear Rodeo.</p>
     </div>
-  </div>
+  </section>
 
-  <!-- RIGHT: Controls + Export -->
-  <aside class="tf-sidebar tf-right">
+  <aside class="col-side">
 
-    <div class="tf-section">
-      <div class="panel-label">Scale &amp; Position</div>
+    <section>
+      <div class="panel-head"><h2>Portrait</h2></div>
+      <button class="drop" id="drop-zone" type="button">
+        <b id="dz-name">Choose an image</b>
+        <span id="dz-text">PNG, JPG or WEBP. You can also drop it on the preview or paste it.</span>
+      </button>
+      <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" hidden>
+    </section>
 
-      <div class="flex items-center gap-2 mb-3 min-w-0">
-        <label for="s-sx" class="text-[11px] w-[46px] shrink-0" style="color:var(--text-dim)">Scale X</label>
-        <input type="range" id="s-sx" min="20" max="250" value="100" class="tf-range flex-1 min-w-0">
-        <span class="text-[11px] w-8 shrink-0 text-right tabular-nums" id="v-sx"
-              style="color:var(--torch-gold)">100%</span>
+    <section>
+      <div class="panel-head"><h2>Border</h2></div>
+      <div class="border-grid" id="border-grid"></div>
+      <div class="panel-foot">
+        <button id="add-border-btn" class="btn-link" type="button">Add your own border</button>
+        <span class="hint">512 × 512 PNG</span>
       </div>
+      <input type="file" id="custom-border-input" accept="image/png,image/webp" hidden>
+    </section>
 
-      <div class="flex items-center gap-2 mb-3 min-w-0">
-        <label for="s-sy" class="text-[11px] w-[46px] shrink-0" style="color:var(--text-dim)">Scale Y</label>
-        <input type="range" id="s-sy" min="20" max="250" value="100" class="tf-range flex-1 min-w-0">
-        <span class="text-[11px] w-8 shrink-0 text-right tabular-nums" id="v-sy"
-              style="color:var(--torch-gold)">100%</span>
+    <section>
+      <div class="panel-head"><h2>Scale &amp; position</h2></div>
+      <div class="ctl">
+        <div class="slider">
+          <label for="s-sx">Width</label>
+          <input type="range" id="s-sx" min="20" max="250" value="100">
+          <output id="v-sx" for="s-sx">100%</output>
+        </div>
+        <div class="slider">
+          <label for="s-sy">Height</label>
+          <input type="range" id="s-sy" min="20" max="250" value="100">
+          <output id="v-sy" for="s-sy">100%</output>
+        </div>
+        <label class="check"><input type="checkbox" id="link-axes" checked> Keep proportions</label>
       </div>
-
-      <div class="tf-link-row">
-        <input type="checkbox" id="link-axes" checked class="tf-check">
-        <span class="text-[11px]" style="color:var(--text-dim)">Lock X &amp; Y together</span>
+      <div class="panel-foot">
+        <button id="reset-btn" class="btn-link" type="button">Reset position and scale</button>
       </div>
+    </section>
 
-      <button id="reset-btn" class="tf-btn tf-btn-block">Reset position &amp; scale</button>
-    </div>
-
-    <div class="tf-sidebar-divider"></div>
-
-    <details class="tf-collapse">
-      <summary class="panel-label">
-        Image
-        <span class="tf-collapse-arrow">▾</span>
-      </summary>
-      <div class="tf-collapse-body">
-
-        <div class="flex items-center gap-2 mb-3 min-w-0">
-          <label for="s-bright" class="text-[11px] w-[52px] shrink-0" style="color:var(--text-dim)">Brightness</label>
-          <input type="range" id="s-bright" min="0" max="200" value="100" class="tf-range flex-1 min-w-0">
-          <span class="text-[11px] w-7 shrink-0 text-right tabular-nums" id="v-bright"
-                style="color:var(--torch-gold)">100</span>
+    <details>
+      <summary class="panel-head"><h2>Image</h2><span class="caret"></span></summary>
+      <div class="ctl">
+        <div class="slider">
+          <label for="s-bright">Brightness</label>
+          <input type="range" id="s-bright" min="0" max="200" value="100">
+          <output id="v-bright" for="s-bright">100</output>
         </div>
-
-        <div class="flex items-center gap-2 mb-3 min-w-0">
-          <label for="s-contrast" class="text-[11px] w-[52px] shrink-0" style="color:var(--text-dim)">Contrast</label>
-          <input type="range" id="s-contrast" min="0" max="200" value="100" class="tf-range flex-1 min-w-0">
-          <span class="text-[11px] w-7 shrink-0 text-right tabular-nums" id="v-contrast"
-                style="color:var(--torch-gold)">100</span>
+        <div class="slider">
+          <label for="s-contrast">Contrast</label>
+          <input type="range" id="s-contrast" min="0" max="200" value="100">
+          <output id="v-contrast" for="s-contrast">100</output>
         </div>
-
-        <div class="flex items-center gap-2 mb-3 min-w-0">
-          <label for="s-sat" class="text-[11px] w-[52px] shrink-0" style="color:var(--text-dim)">Saturation</label>
-          <input type="range" id="s-sat" min="0" max="200" value="100" class="tf-range flex-1 min-w-0">
-          <span class="text-[11px] w-7 shrink-0 text-right tabular-nums" id="v-sat"
-                style="color:var(--torch-gold)">100</span>
+        <div class="slider">
+          <label for="s-sat">Saturation</label>
+          <input type="range" id="s-sat" min="0" max="200" value="100">
+          <output id="v-sat" for="s-sat">100</output>
         </div>
-
-        <div class="flex gap-2 mb-3">
-          <button id="btn-flip" class="tf-btn flex-1">⇔ Flip</button>
-          <button id="btn-rot"  class="tf-btn flex-1">↻ Rotate 90°</button>
+        <div class="slider">
+          <label for="s-rot">Rotation</label>
+          <input type="range" id="s-rot" min="-180" max="180" value="0">
+          <output id="v-rot" for="s-rot">0°</output>
         </div>
-
-        <button id="reset-adj" class="tf-btn tf-btn-block">Reset adjustments</button>
-
+        <div class="btn-row">
+          <button id="btn-flip" class="btn-small" type="button">Flip</button>
+          <button id="btn-rot" class="btn-small" type="button">Rotate 90°</button>
+        </div>
+      </div>
+      <div class="panel-foot">
+        <button id="reset-adj" class="btn-link" type="button">Reset adjustments</button>
       </div>
     </details>
 
-    <div class="tf-sidebar-divider"></div>
-
-    <details class="tf-collapse">
-      <summary class="panel-label">
-        Safe Area
-        <span class="tf-collapse-arrow">▾</span>
-      </summary>
-      <div class="tf-collapse-body">
-        <div class="flex items-center gap-2 mb-3 min-w-0">
-          <label for="s-inner" class="text-[11px] w-[52px] shrink-0" style="color:var(--text-dim)">Clip radius</label>
-          <input type="range" id="s-inner" min="60" max="256" value="200" class="tf-range flex-1 min-w-0">
-          <span class="text-[11px] w-7 shrink-0 text-right tabular-nums" id="v-inner"
-                style="color:var(--torch-gold)">200</span>
+    <details>
+      <summary class="panel-head"><h2>Safe area</h2><span class="caret"></span></summary>
+      <div class="ctl">
+        <div class="slider">
+          <label for="s-inner">Clip radius</label>
+          <input type="range" id="s-inner" min="60" max="256" value="220">
+          <output id="v-inner" for="s-inner">220</output>
         </div>
-
-        <div class="tf-link-row">
-          <input type="checkbox" id="show-ring" class="tf-check">
-          <span class="text-[11px]" style="color:var(--text-dim)">Show safe-area ring</span>
-        </div>
-
-        <p class="text-[10px] leading-relaxed mt-1" style="color:var(--text-faint)">
-          Pixels outside the ring are clipped by the border.
-        </p>
+        <label class="check"><input type="checkbox" id="show-ring"> Show the safe-area ring</label>
+        <p class="hint">The portrait is cut at the ring. Keep it just past the border's inner edge.</p>
       </div>
     </details>
-
-    <div class="tf-export-area">
-      <button id="export-btn" disabled>⬇ Download Token PNG</button>
-      <p class="text-[10px] text-center mt-2 tracking-wide" style="color:var(--text-faint)">
-        Transparent · Roll20 · Foundry · OwlBear
-      </p>
-    </div>
 
   </aside>
-
 </main>
 
-<footer class="tf-footer-slim">
-  <div class="tf-footer-slim-inner">
-    <span>No account · No upload · Everything runs locally in your browser</span>
-    <div class="footer-links">
-      <a href="https://github.com/Sectr99/Tokenizer" target="_blank">GitHub</a>
-      <a href="https://github.com/Sectr99/Tokenizer/blob/main/CHANGELOG.md" target="_blank">Changelog</a>
-      <a href="https://github.com/Sectr99/Tokenizer/issues" target="_blank">Issues</a>
-    </div>
-  </div>
+<footer class="site-footer">
+  <p class="credit">Created by Sectr99 <span class="dim">· Set in Oswald and Crimson Pro</span></p>
+  <p class="ogl">Nothing is uploaded. Your images stay in this browser.
+    <a href="https://github.com/Sectr99/Tokenizer">Source</a> ·
+    <a href="https://github.com/Sectr99/Tokenizer/blob/main/CHANGELOG.md">Changelog</a> ·
+    <a href="https://github.com/Sectr99/Tokenizer/issues">Report a problem</a></p>
 </footer>
 
-<script src="js/borders.js"></script>
-<script src="js/app.js"></script>
+<script src="js/borders.js?v=3.0.0"></script>
+<script src="js/app.js?v=3.0.0"></script>
 
 </body>
 </html>

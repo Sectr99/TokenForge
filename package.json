@@ -1,15 +1,8 @@
 {
   "name": "tokenforge",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
-    "dev": "tailwindcss -i css/input.css -o css/main.css --watch",
-    "build:css": "tailwindcss -i css/input.css -o css/main.css --minify"
-  },
-  "devDependencies": {
-    "@tailwindcss/cli": "^4.0.0",
-    "daisyui": "^5.0.0",
-    "serve": "^14.2.6",
-    "tailwindcss": "^4.0.0"
+    "start": "npx --yes serve@14 . -l 3000"
   }
 }

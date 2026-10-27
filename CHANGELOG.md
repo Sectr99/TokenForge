@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.0.0] - 2026-10-26
+
+### Changed
+- Redesigned in the DungeonTools style: bone paper and ink, Oswald and Crimson Pro, ruled numbered panels, light and dark mode (Auto/Light/Dark)
+- Preview and Download stay in view on desktop; on phones the Download button sticks to the bottom
+- Portraits can be dropped or chosen straight on the preview
+- Exports are named after the portrait (`goblin-token.png`)
+- Removed Tailwind and daisyUI; the CSS is plain and there is no build step
+- New border art for all 10 borders, redrawn from the originals with a solid, fully opaque band (the old art was 15–35% semi-transparent, so the page showed through the metal); WebP, 0.9 MB in total
+
+### Added
+- Paste a portrait with Ctrl+V / Cmd+V
+- Export size: 256, 512 or 1024 px; larger sizes redraw the portrait from its source pixels
+- Pinch to zoom on touch screens
+- Custom borders get their cut radius detected from the image instead of a fixed 180
+- Settings are remembered between visits (border, cut radius, adjustments, rotation, size, ring)
+- Free rotation slider (−180° to 180°) next to Rotate 90°; double-click the preview to recentre
+- Keyboard control: border tiles and the upload area are buttons; arrow keys nudge the portrait, + and − zoom
+- An error message when a dropped file is not a PNG, JPG or WEBP
+
+### Fixed
+- The safe-area ring now marks exactly where the portrait is cut (it sat 20px inside before); built-in radii updated to match
+- File names with `<` or `&` broke the upload label
+
+### Removed
+- Torch emoji, flicker animation and the random background canvas
+
 ## [2.1.0] - 2026-06-15
 
 ### Added
