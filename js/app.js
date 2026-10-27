@@ -294,7 +294,6 @@ function updateStatus() {
   exportBtn.textContent = ready ? 'Download token' : portrait ? 'Pick a border to download' : 'Add a portrait to download';
   $('dateline').textContent =
     [portraitName || 'No portrait', borderName || 'No border', `${Math.round(sx * 100)}%`].join(' · ');
-  $('size-meta').textContent = `${exportSize} × ${exportSize} · PNG · Transparent`;
   save();
 }
 

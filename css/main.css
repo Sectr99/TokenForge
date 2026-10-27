@@ -216,7 +216,15 @@ input[type=checkbox] { width: 18px; height: 18px; margin: 0; accent-color: var(-
 .export .btn { width: 100%; }
 .btn-primary:disabled { background: none; color: var(--ink-3); box-shadow: none; cursor: default; outline: 1.5px dashed var(--rule); outline-offset: -1.5px; min-height: 48px; }
 @media (max-width: 920px) {
-  .export { position: sticky; bottom: 0; z-index: 10; padding: 12px 0; background: var(--paper); border-top: 1px solid var(--hair); }
+  .export { position: sticky; bottom: 0; z-index: 10; padding: 12px 0; isolation: isolate; border-top: 1px solid var(--hair); }
+  /* Opaque so the page scrolls under it, with the same paper grain as body::before
+     (fixed attachment keeps the noise aligned with the page's) */
+  .export::before, .export::after { content: ''; position: absolute; inset: 0; z-index: -1; }
+  .export::before { background: var(--paper); }
+  .export::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .08 0 0 0 0 .05 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-attachment: fixed; opacity: var(--grain); mix-blend-mode: multiply;
+  }
 }
 
 /* Portrait drop zone */
